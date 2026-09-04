@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZEN VOL 2.0 - Studio Prompt & Storyboard AI</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  <!-- Tone.js for micro-interaction sounds -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+          },
+          colors: {
+            zen: {
+              black: '#080808',
+              card: '#111111',
+              cardHover: '#161616',
+              border: '#272210',
+              yellow: '#F5B000',
+              gold: '#FFC837',
+              goldLight: '#FFE382',
+              darkYellow: '#855E00',
+              accent: '#E6A100',
+              glow: 'rgba(245, 176, 0, 0.18)'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #060606;
+      color: #E6E6E6;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    .zen-glow {
+      box-shadow: 0 0 35px -5px rgba(245, 176, 0, 0.22);
+    }
+    .zen-glow-sm {
+      box-shadow: 0 0 15px -3px rgba(245, 176, 0, 0.25);
+    }
+    .zen-border-glow {
+      border: 1.5px solid #F5B000;
+      box-shadow: inset 0 0 15px rgba(245, 176, 0, 0.1), 0 0 20px rgba(245, 176, 0, 0.15);
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0d0d0d;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #332b12;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #F5B000;
+    }
+
+    /* Shimmer subtle effect */
+    @keyframes subtlePulse {
+      0%, 100% { opacity: 0.95; }
+      50% { opacity: 1; filter: drop-shadow(0 0 12px rgba(245, 176, 0, 0.4)); }
+    }
+    .mascot-glow {
+      animation: subtlePulse 4s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#070707] text-neutral-100 flex flex-col justify-between selection:bg-zen-yellow selection:text-black">
+
+  <!-- Top Navigation Header -->
+  <header class="border-b border-[#222016] bg-[#0c0c0c]/80 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-zen-yellow to-amber-600 flex items-center justify-center font-display font-extrabold text-black text-xl shadow-lg shadow-amber-500/20">
+          Z2
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-display font-extrabold text-lg sm:text-xl tracking-wider text-white">ZEN <span class="text-zen-yellow">VOL 2.0</span></span>
+            <span class="hidden sm:inline-block text-[10px] uppercase font-bold tracking-widest bg-zen-yellow/15 text-zen-yellow border border-zen-yellow/30 px-2 py-0.5 rounded-full">PRO SUITE</span>
+          </div>
+          <p class="text-[11px] text-neutral-400 hidden sm:block">AI Prompt Engineering & Storyboard Creator</p>
+        </div>
+      </div>
+
+      <!-- Navigation tabs -->
+      <div class="flex items-center bg-[#151515] p-1 rounded-xl border border-[#2b2715]">
+        <button onclick="switchTab('dashboard')" id="tab-dashboard" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 bg-zen-yellow text-black shadow-sm flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          Infografis
+        </button>
+        <button onclick="switchTab('generator')" id="tab-generator" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 text-neutral-400 hover:text-white flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          Rumus Generator
+        </button>
+        <button onclick="switchTab('storyboard')" id="tab-storyboard" class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 text-neutral-400 hover:text-white flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path></svg>
+          Studio Proyek
+        </button>
+      </div>
+
+      <!-- Quick Audio Feedback Toggle -->
+      <button id="soundToggleBtn" onclick="toggleSoundFx()" class="p-2 rounded-xl border border-[#2b2715] bg-[#141414] text-zen-yellow hover:bg-[#1f1a0d] transition text-xs flex items-center gap-1.5" title="Efek Suara UI">
+        <svg id="soundIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+        <span class="hidden md:inline text-[11px] font-medium">SFX</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full">
+
+    <!-- VIEW 1: INFOGRAFIS UTAMA (Match exact visual style from user's image) -->
+    <section id="view-dashboard" class="space-y-6 block">
+      
+      <!-- Top Card Section: Title, Mascot, & Keahlian Utama -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+        
+        <!-- Left: Branding & Core Concept -->
+        <div class="lg:col-span-4 bg-[#0e0e0e] border border-[#2a2413] rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group hover:border-zen-yellow/50 transition duration-300">
+          <div class="absolute -right-16 -top-16 w-44 h-44 bg-zen-yellow/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div>
+            <div class="flex items-baseline gap-2">
+              <h1 class="font-display text-5xl sm:text-6xl font-black tracking-tight text-white leading-none">ZEN</h1>
+            </div>
+            <h2 class="font-display text-4xl sm:text-5xl font-extrabold text-zen-yellow tracking-tight -mt-1 mb-3">VOL 2.0</h2>
+            
+            <div class="inline-block bg-zen-yellow text-black font-extrabold text-xs sm:text-sm px-3.5 py-1.5 rounded-lg tracking-wide uppercase mb-4 shadow-md shadow-amber-500/10">
+              PANDUAN MEMBUAT PROMPT YANG TEPAT
+            </div>
+
+            <p class="text-sm text-neutral-300 leading-relaxed">
+              Panduan ringkas untuk membuat prompt efektif untuk gambar, video, narasi, dan proyek kreatif yang berkualitas dan sesuai kebutuhan.
+            </p>
+          </div>
+
+          <!-- 4 Pillars Flow (Ide -> Struktur -> Prompt -> Hasil) -->
+          <div class="mt-6 pt-5 border-t border-[#232014]">
+            <div class="grid grid-cols-4 gap-2 text-center">
+              <div class="flex flex-col items-center">
+                <div class="w-11 h-11 rounded-xl bg-[#1a170d] border border-zen-yellow/40 flex items-center justify-center text-zen-yellow text-lg mb-1.5 shadow-inner">
+                  💡
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-300 leading-tight">IDE KREATIF</span>
+              </div>
+              <div class="flex flex-col items-center relative">
+                <span class="absolute -left-2 top-3 text-zen-yellow/40 font-bold">&gt;</span>
+                <div class="w-11 h-11 rounded-xl bg-[#1a170d] border border-zen-yellow/40 flex items-center justify-center text-zen-yellow text-lg mb-1.5 shadow-inner">
+                  🧩
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-300 leading-tight">STRUKTUR PROYEK</span>
+              </div>
+              <div class="flex flex-col items-center relative">
+                <span class="absolute -left-2 top-3 text-zen-yellow/40 font-bold">&gt;</span>
+                <div class="w-11 h-11 rounded-xl bg-[#1a170d] border border-zen-yellow/40 flex items-center justify-center text-zen-yellow text-lg mb-1.5 shadow-inner">
+                  💬
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-300 leading-tight">PROMPT TEPAT</span>
+              </div>
+              <div class="flex flex-col items-center relative">
+                <span class="absolute -left-2 top-3 text-zen-yellow/40 font-bold">&gt;</span>
+                <div class="w-11 h-11 rounded-xl bg-[#1a170d] border border-zen-yellow/40 flex items-center justify-center text-zen-yellow text-lg mb-1.5 shadow-inner">
+                  🎯
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-neutral-300 leading-tight">HASIL MAKSIMAL</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Center: 3D Android Mascot Hero -->
+        <div class="lg:col-span-4 bg-gradient-to-b from-[#14120a] via-[#0d0d0d] to-[#070707] border border-[#302812] rounded-2xl p-5 flex flex-col items-center justify-center relative overflow-hidden text-center group">
+          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-zen-yellow/15 via-transparent to-transparent opacity-80 pointer-events-none"></div>
+          
+          <!-- Interactive 3D Cute Robot Mascot Illustration -->
+          <div class="mascot-glow relative z-10 my-2 transform transition group-hover:scale-105 duration-500 cursor-pointer" onclick="mascotGreet()">
+            <svg class="w-52 h-56 mx-auto drop-shadow-[0_15px_25px_rgba(245,176,0,0.35)]" viewBox="0 0 200 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Golden Helmet Antenna -->
+              <circle cx="100" cy="18" r="8" fill="#F5B000" stroke="#FFDF78" stroke-width="2"/>
+              <path d="M100 26V40" stroke="#F5B000" stroke-width="4" stroke-linecap="round"/>
+              
+              <!-- Outer Golden Ring Helmet -->
+              <ellipse cx="100" cy="78" rx="65" ry="52" fill="#181818" stroke="#F5B000" stroke-width="5"/>
+              <!-- Inner Dark Visor Face -->
+              <ellipse cx="100" cy="80" rx="55" ry="42" fill="#050505" stroke="#2a2410" stroke-width="2"/>
+              
+              <!-- Visor Reflection Flare -->
+              <path d="M60 55 C 80 50, 110 50, 138 58" stroke="rgba(255,255,255,0.4)" stroke-width="2.5" stroke-linecap="round"/>
+              
+              <!-- Cute Robot Eyes (Glowing LED Pills) -->
+              <rect id="robot-eye-left" x="72" y="70" width="16" height="24" rx="8" fill="#FFFFFF" class="transition-all duration-300">
+                <animate attributeName="opacity" values="1;0.7;1" dur="2.5s" repeatCount="indefinite"/>
+              </rect>
+              <rect id="robot-eye-right" x="112" y="70" width="16" height="24" rx="8" fill="#FFFFFF" class="transition-all duration-300">
+                <animate attributeName="opacity" values="1;0.7;1" dur="2.5s" repeatCount="indefinite"/>
+              </rect>
+              
+              <!-- Golden Ear Caps -->
+              <rect x="28" y="68" width="10" height="22" rx="4" fill="#F5B000"/>
+              <rect x="162" y="68" width="10" height="22" rx="4" fill="#F5B000"/>
+
+              <!-- Robot Body / Hoodie Jacket -->
+              <path d="M50 134 C 45 150, 42 195, 42 210 L 158 210 C 158 195, 155 150, 150 134 Z" fill="#131313" stroke="#2f2913" stroke-width="3"/>
+              <!-- Yellow Zipper and Collar -->
+              <path d="M100 134 V 210" stroke="#F5B000" stroke-width="3" stroke-dasharray="3 2"/>
+              <path d="M72 134 L 100 152 L 128 134" fill="none" stroke="#F5B000" stroke-width="3.5" stroke-linejoin="round"/>
+              
+              <!-- ZEN 2.0 Badge on Hoodie -->
+              <rect x="115" y="152" width="28" height="20" rx="4" fill="#1b170c" stroke="#F5B000" stroke-width="1.5"/>
+              <text x="129" y="161" fill="#F5B000" font-size="7" font-weight="bold" font-family="sans-serif" text-anchor="middle">ZEN</text>
+              <text x="129" y="169" fill="#FFFFFF" font-size="6.5" font-weight="extrabold" font-family="sans-serif" text-anchor="middle">2.0</text>
+              
+              <!-- Stylus Pen in Hand -->
+              <path d="M52 165 L 40 138" stroke="#D1D5DB" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="39" cy="136" r="3" fill="#F5B000"/>
+              <!-- Hand -->
+              <ellipse cx="56" cy="170" rx="8" ry="10" fill="#1E1E1E" stroke="#4B5563" stroke-width="1.5"/>
+            </svg>
+          </div>
+
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1b1709] border border-zen-yellow/40 text-zen-yellow text-xs font-semibold mt-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            Asisten Kreatif Siap Bantu
+          </span>
+          <p class="text-xs text-neutral-400 mt-2">Klik robot untuk memicu inspirasi ide kilat!</p>
+        </div>
+
+        <!-- Right: KEAHLIAN UTAMA Checklist -->
+        <div class="lg:col-span-4 bg-[#0e0e0e] border border-[#2a2413] rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <h3 class="font-display text-2xl font-extrabold text-zen-yellow uppercase tracking-wide border-b border-[#242013] pb-3 mb-4 flex items-center justify-between">
+              <span>KEAHLIAN UTAMA</span>
+              <span class="text-xs bg-[#1d190c] text-zen-yellow px-2 py-0.5 rounded border border-zen-yellow/30 font-sans normal-case">6 Kemampuan</span>
+            </h3>
+
+            <!-- List items matching image -->
+            <ul class="space-y-3 text-xs sm:text-sm text-neutral-200">
+              <li class="flex items-start gap-3 group">
+                <span class="w-5 h-5 rounded-full bg-zen-yellow/20 border border-zen-yellow text-zen-yellow flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-black">✓</span>
+                <span class="group-hover:text-zen-yellow transition font-medium">Merancang Prompt Gambar (AI Art)</span>
+              </li>
+              <li class="flex items-start gap-3 group">
+                <span class="w-5 h-5 rounded-full bg-zen-yellow/20 border border-zen-yellow text-zen-yellow flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-black">✓</span>
+                <span class="group-hover:text-zen-yellow transition font-medium">Merancang Prompt Video (AI Video)</span>
+              </li>
+              <li class="flex items-start gap-3 group">
+                <span class="w-5 h-5 rounded-full bg-zen-yellow/20 border border-zen-yellow text-zen-yellow flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-black">✓</span>
+                <span class="group-hover:text-zen-yellow transition font-medium">Menulis Narasi / Storytelling</span>
+              </li>
+              <li class="flex items-start gap-3 group">
+                <span class="w-5 h-5 rounded-full bg-zen-yellow/20 border border-zen-yellow text-zen-yellow flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-black">✓</span>
+                <span class="group-hover:text-zen-yellow transition font-medium">Membuat Storyboard & Alur Cerita</span>
+              </li>
+              <li class="flex items-start gap-3 group">
+                <span class="w-5 h-5 rounded-full bg-zen-yellow/20 border border-zen-yellow text-zen-yellow flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-black">✓</span>
+                <span class="group-hover:text-zen-yellow transition font-medium">Mengelola Proyek Kreatif End-to-End</span>
+              </li>
+              <li class="flex items-start gap-3 group">
+                <span class="w-5 h-5 rounded-full bg-zen-yellow/20 border border-zen-yellow text-zen-yellow flex items-center justify-center flex-shrink-0 mt-0.5 text-xs font-black">✓</span>
+                <span class="group-hover:text-zen-yellow transition font-medium">Mengoptimalkan Prompt agar Hasil Sesuai Ekspektasi</span>
+              </li>
+            </ul>
+          </div>
+
+          <button onclick="switchTab('generator')" class="mt-4 w-full py-2.5 bg-gradient-to-r from-zen-yellow to-amber-500 hover:from-amber-400 hover:to-amber-500 text-black font-bold rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 transition transform active:scale-98">
+            <span>Coba Bangun Prompt Sekarang</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Middle Big Section: ALUR KERJA PROYEK (10 Steps) -->
+      <div class="bg-[#0e0e0e] border border-[#2b2512] rounded-2xl p-5 sm:p-6">
+        <div class="flex items-center justify-center mb-6">
+          <div class="bg-zen-yellow text-black font-display font-extrabold text-sm sm:text-base px-6 py-1.5 rounded-xl uppercase tracking-wider shadow-lg shadow-amber-500/10">
+            ALUR KERJA PROYEK
+          </div>
+        </div>
+
+        <!-- 10 Step Cards Horizontal Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-2.5">
+          
+          <!-- Step 1 -->
+          <div class="bg-[#141414] hover:bg-[#1a170e] border border-[#262112] hover:border-zen-yellow/60 rounded-xl p-3 flex flex-col items-center text-center transition group cursor-pointer" onclick="previewStepDetails(1)">
+            <div class="w-7 h-7 rounded-full bg-zen-yellow text-black font-extrabold text-xs flex items-center justify-center mb-2 shadow">1</div>
+            <div class="text-2xl mb-1 group-hover:scale-110 transition transform">💡</div>
+            <div class="text-[11px] font-extrabold text-zen-yellow uppercase leading-tight mb-1">IDE CERITA</div>
+            <p class="text-[10px] text-neutral-400 leading-snug">Tentukan ide utama, konsep, & pesan.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="bg-[#141414] hover:bg-[#1a170e] border border-[#262112] hover:border-zen-yellow/60 rounded-xl p-3 flex flex-col items-center text-center transition group cursor-pointer" onclick="previewStepDetails(2)">
+            <div class="w-7 h-7 rounded-full bg-zen-yellow text-black font-extrabold text-xs flex items-center justify-center mb-2 shadow">2</div>
+            <div class="text-2xl mb-1 group-hover:scale-110 transition transform">👥</div>
+            <div class="text-[11px] font-extrabold text-zen-yellow uppercase leading-tight mb-1">KARAKTER UTAMA</div>
+            <p class="text-[10px] text-neutral-400 leading-snug">Rancang karakter utama & pendukung detail.</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="bg-[#141414] hover:bg-[#1a170e] border border-[#262112] hover:border-zen-yellow/60 rounded-xl p-3 flex flex-col items-center text-center transition group cursor-pointer" onclick="previewStepDetails(3)">
+            <div class="w-7 h-7 rounded-full bg-zen-yellow text-black font-extrabold text-xs flex items-center justify-center mb-2 shadow">3</div>
+            <div class="text-2xl mb-1 group-hover:scale-110 transition transform">🎭</div>
+            <div class="text-[11px] font-extrabold text-zen-yellow uppercase leading-tight mb-1">GENRE</div>
+            <p class="text-[10px] text-neutral-400 leading-snug">Pilih tema (komedi, aksi, drama, horor, dll).</p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="bg-[#141414] hover:bg-[#1a170e] border border-[#262112] hover:border-zen-yellow/60 rounded-xl p-3 flex flex-col items-center text-center transition group cursor-pointer" onclick="previewStepDetails(4)">
+            <div class="w-7 h-7 rounded-full bg-zen-yellow text-black font-extrabold text-xs flex items-center justify-center mb-2 shadow">4</div>
+            <div class="text-2xl mb-1 group-hover:scale-110 transition transform">🎨</div>
+            <div class="text-[11px] font-extrabold text-zen-yellow uppercase leading-tight mb-1">GAYA VISUAL</div>
+            <p class="text-[10px] text-neutral-400 leading-snug">Pilih clay, anime, realistis, kartun 3D.</p>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="bg-[#141414] hover:bg-[#1a170e] border border-[#262112] hover:border-zen-yellow/60 rounded-xl p-3 flex flex-col items-center text-center transition group cursor-pointer" onclick="previewStepDetails(5)">
+            <div class="w-7 h-7 rounded-full bg-zen-yellow text-black font-extrabold text-xs flex items-center justify-center mb-2 shadow">5</div>
+            <div class="text-2xl mb-1 group-hover:scale-110 transition transform">🥞</div>
+            <div class="text-[11px] font-extrabold text-zen-yellow uppercase leading-tight mb-1">JUMLAH ADEGAN</div>
+            <p class="text-[10px] text-neutral-400 leading-snug">Tentukan jumlah adegan (4/6/8/kebutuhan).</p>
+          </div>
+
+          <!-- Step 6 -->
+          <div class="bg-[#141414] hover:bg-[#1a170e] border border-[#262112] hover:border-zen-yellow/60 rounded-xl p-3 flex flex-col items-center text-center transition group cursor-pointer" onclick="previewStepDetails(6)">
+            <div class="w-7 h-7 rounded-full bg-zen-yellow text-black font-extrabold text-xs flex items-center justify-center mb-2 shadow">6</div>
+            <div class="text-2xl mb-1 group-hover:scale-110 transition transform">📐</div>
+            <div class="text-[11px] font-extrabold text-zen-yellow uppercase leading-tight mb-1">RASIO ASPEK</div>
+            <p class="text-[10px] text-neutral-400 leading-snug">Pilih rasio video/gambar (16:9, 9:16, 1:1).</p>
+          </div>
+
+          <!-- Step 7 -->
+          <div class="bg-[#141414] hover:bg-[#1a170e] border border-[#262112] hover:border-zen-yellow/60 rounded-xl p-3 flex flex-col items-center text-center transition group cursor-pointer" onclick="previewStepDetails(7)">
+            <div class="w-7 h-7 rounded-full bg-zen-yellow text-black font-extrabold text-xs flex items-center justify-center mb-2 shadow">7</div>
+            <div class="text-2xl mb-1 group-hover:scale-110 transition transform">📋</div>
+            <div class="text-[11px] font-extrabold text-zen-yellow uppercase leading-tight mb-1">STORYBOARD</div>
+            <p class="text-[10px] text-neutral-400 leading-snug">Pola alur cerita otomatis dari adegan awal-akhir.</p>
+          </div>
+
+          <!-- Step 8 -->
+          <div class="bg-[#141414] hover:bg-[#1a170e] border border-[#262112] hover:border-zen-yellow/60 rounded-xl p-3 flex flex-col items-center text-center transition group cursor-pointer" onclick="previewStepDetails(8)">
+            <div class="w-7 h-7 rounded-full bg-zen-yellow text-black font-extrabold text-xs flex items-center justify-center mb-2 shadow">8</div>
+            <div class="text-2xl mb-1 group-hover:scale-110 transition transform">🖼️</div>
+            <div class="text-[11px] font-extrabold text-zen-yellow uppercase leading-tight mb-1">PROMPT GAMBAR</div>
+            <p class="text-[10px] text-neutral-400 leading-snug">Prompt detail per adegan untuk Midjourney/Flux.</p>
+          </div>
+
+          <!-- Step 9 -->
+          <div class="bg-[#141414] hover:bg-[#1a170e] border border-[#262112] hover:border-zen-yellow/60 rounded-xl p-3 flex flex-col items-center text-center transition group cursor-pointer" onclick="previewStepDetails(9)">
+            <div class="w-7 h-7 rounded-full bg-zen-yellow text-black font-extrabold text-xs flex items-center justify-center mb-2 shadow">9</div>
+            <div class="text-2xl mb-1 group-hover:scale-110 transition transform">🎬</div>
+            <div class="text-[11px] font-extrabold text-zen-yellow uppercase leading-tight mb-1">PROMPT VIDEO</div>
+            <p class="text-[10px] text-neutral-400 leading-snug">Prompt pergerakan kamera untuk Runway/Luma.</p>
+          </div>
+
+          <!-- Step 10 -->
+          <div class="bg-[#141414] hover:bg-[#1a170e] border border-[#262112] hover:border-zen-yellow/60 rounded-xl p-3 flex flex-col items-center text-center transition group cursor-pointer" onclick="previewStepDetails(10)">
+            <div class="w-7 h-7 rounded-full bg-zen-yellow text-black font-extrabold text-xs flex items-center justify-center mb-2 shadow">10</div>
+            <div class="text-2xl mb-1 group-hover:scale-110 transition transform">🎤</div>
+            <div class="text-[11px] font-extrabold text-zen-yellow uppercase leading-tight mb-1">NARASI</div>
+            <p class="text-[10px] text-neutral-400 leading-snug">Teks naskah narasi / voice-over tiap adegan.</p>
+          </div>
+
+        </div>
+
+        <div id="step-detail-box" class="mt-4 p-4 rounded-xl bg-[#17140b] border border-zen-yellow/30 text-xs text-neutral-200 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-xl">✨</span>
+            <p id="step-detail-text"><strong class="text-zen-yellow">Tips:</strong> Klik langkah apa saja di atas untuk melihat panduan detail atau buka Studio Proyek untuk langsung membuatnya!</p>
+          </div>
+          <button onclick="switchTab('storyboard')" class="text-[11px] bg-zen-yellow text-black font-bold px-3 py-1.5 rounded-lg hover:bg-amber-400 transition flex-shrink-0 ml-3">Buka Studio ➔</button>
+        </div>
+      </div>
+
+      <!-- Lower Grid: Rumus Prompt Sederhana & Tips Membuat Prompt -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        
+        <!-- RUMUS PROMPT SEDERHANA -->
+        <div class="bg-[#0e0e0e] border border-[#2a2413] rounded-2xl p-6 relative flex flex-col justify-between">
+          <div>
+            <h3 class="font-display text-xl font-black text-zen-yellow uppercase tracking-wide mb-4">
+              RUMUS PROMPT SEDERHANA
+            </h3>
+
+            <!-- Formula Badges row -->
+            <div class="flex flex-wrap items-center gap-2 mb-4 text-xs font-bold">
+              <span class="px-3 py-1.5 rounded-lg bg-emerald-950/80 border border-emerald-500/50 text-emerald-400">SUBJEK</span>
+              <span class="text-neutral-500 font-extrabold">+</span>
+              <span class="px-3 py-1.5 rounded-lg bg-amber-950/80 border border-amber-500/50 text-amber-400">AKSI</span>
+              <span class="text-neutral-500 font-extrabold">+</span>
+              <span class="px-3 py-1.5 rounded-lg bg-blue-950/80 border border-blue-500/50 text-blue-400">LOKASI</span>
+              <span class="text-neutral-500 font-extrabold">+</span>
+              <span class="px-3 py-1.5 rounded-lg bg-purple-950/80 border border-purple-500/50 text-purple-400">DETAIL</span>
+              <span class="text-neutral-500 font-extrabold">+</span>
+              <span class="px-3 py-1.5 rounded-lg bg-pink-950/80 border border-pink-500/50 text-pink-400">GAYA VISUAL</span>
+            </div>
+
+            <!-- Formula Quote -->
+            <div class="bg-[#141414] border border-[#222] p-3.5 rounded-xl mb-4">
+              <span class="text-xs font-bold text-neutral-400 block mb-1">RUMUS:</span>
+              <code class="text-xs text-zen-yellow font-mono font-semibold block">
+                SUBJEK + AKSI + LOKASI + DETAIL + GAYA VISUAL
+              </code>
+            </div>
+
+            <p class="text-xs text-neutral-400 leading-relaxed">
+              Kombinasi 5 elemen ini menjamin AI memahami fokus gambar tanpa menghasilkan halusinasi atau elemen acak yang tidak diinginkan.
+            </p>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-[#201c10] flex justify-between items-center">
+            <span class="text-[11px] text-neutral-400">Ingin coba langsung?</span>
+            <button onclick="switchTab('generator')" class="text-xs text-zen-yellow font-bold hover:underline flex items-center gap-1">
+              Buka Generator Rumus &rarr;
+            </button>
+          </div>
+        </div>
+
+        <!-- TIPS MEMBUAT PROMPT -->
+        <div class="bg-[#0e0e0e] border border-[#2a2413] rounded-2xl p-6 flex flex-col justify-between">
+          <div>
+            <h3 class="font-display text-xl font-black text-zen-yellow uppercase tracking-wide mb-4">
+              TIPS MEMBUAT PROMPT
+            </h3>
+
+            <ul class="space-y-2.5 text-xs sm:text-sm text-neutral-300">
+              <li class="flex items-start gap-2.5">
+                <span class="text-zen-yellow text-sm">★</span>
+                <span>Gunakan kata yang <strong>jelas dan spesifik</strong> (hindari kata kiasan ambigu).</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-zen-yellow text-sm">★</span>
+                <span>Sebutkan <strong>detail penting</strong> (aksi karakter, mood pencahayaan, suasana).</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-zen-yellow text-sm">★</span>
+                <span>Tentukan <strong>gaya visual dengan jelas</strong> (claymation, anime 90s, cinematic 35mm).</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-zen-yellow text-sm">★</span>
+                <span>Gunakan parameter rasio & kualitas jika perlu (misal: <code>--ar 16:9 --v 6.1</code>).</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="text-zen-yellow text-sm">★</span>
+                <span>Uji dan <strong>perbaiki prompt secara bertahap</strong> (iterasi, jangan langsung dirombak).</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-[#201c10] flex items-center justify-between text-[11px] text-neutral-500">
+            <span>Standar ZEN Framework</span>
+            <span class="text-zen-yellow font-semibold">100% Teruji di Midjourney, Kling, & Sora</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Row: GENRE POPULER & OUTPUT YANG DIHASILKAN -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
+        
+        <!-- GENRE POPULER (6 items) -->
+        <div class="md:col-span-6 bg-[#0e0e0e] border border-[#2a2413] rounded-2xl p-5">
+          <h3 class="font-display text-lg font-black text-zen-yellow uppercase tracking-wide mb-3">
+            GENRE POPULER
+          </h3>
+          <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 text-center">
+            <div class="bg-[#141414] border border-[#262112] rounded-xl p-2.5 hover:border-zen-yellow/50 transition cursor-pointer" onclick="selectGenreFast('Komedi')">
+              <div class="text-2xl mb-1">😄</div>
+              <span class="text-[10px] font-bold text-neutral-300 block uppercase">KOMEDI</span>
+            </div>
+            <div class="bg-[#141414] border border-[#262112] rounded-xl p-2.5 hover:border-zen-yellow/50 transition cursor-pointer" onclick="selectGenreFast('Aksi')">
+              <div class="text-2xl mb-1">⚔️</div>
+              <span class="text-[10px] font-bold text-neutral-300 block uppercase">AKSI</span>
+            </div>
+            <div class="bg-[#141414] border border-[#262112] rounded-xl p-2.5 hover:border-zen-yellow/50 transition cursor-pointer" onclick="selectGenreFast('Fantasi')">
+              <div class="text-2xl mb-1">🧙‍♂️</div>
+              <span class="text-[10px] font-bold text-neutral-300 block uppercase">FANTASI</span>
+            </div>
+            <div class="bg-[#141414] border border-[#262112] rounded-xl p-2.5 hover:border-zen-yellow/50 transition cursor-pointer" onclick="selectGenreFast('Drama')">
+              <div class="text-2xl mb-1">🎭</div>
+              <span class="text-[10px] font-bold text-neutral-300 block uppercase">DRAMA</span>
+            </div>
+            <div class="bg-[#141414] border border-[#262112] rounded-xl p-2.5 hover:border-zen-yellow/50 transition cursor-pointer" onclick="selectGenreFast('Horor')">
+              <div class="text-2xl mb-1">👻</div>
+              <span class="text-[10px] font-bold text-neutral-300 block uppercase">HOROR</span>
+            </div>
+            <div class="bg-[#141414] border border-[#262112] rounded-xl p-2.5 hover:border-zen-yellow/50 transition cursor-pointer" onclick="selectGenreFast('Petualangan')">
+              <div class="text-2xl mb-1">🗺️</div>
+              <span class="text-[10px] font-bold text-neutral-300 block uppercase">PETUALANGAN</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- OUTPUT YANG DIHASILKAN (5 items) -->
+        <div class="md:col-span-6 bg-[#0e0e0e] border border-[#2a2413] rounded-2xl p-5">
+          <h3 class="font-display text-lg font-black text-zen-yellow uppercase tracking-wide mb-3">
+            OUTPUT YANG DIHASILKAN
+          </h3>
+          <div class="grid grid-cols-5 gap-2 text-center">
+            <div class="bg-[#141414] border border-[#262112] rounded-xl p-2 flex flex-col items-center">
+              <div class="text-xl mb-1 text-zen-yellow">🖼️</div>
+              <span class="text-[9px] font-bold text-neutral-300 uppercase leading-tight">PROMPT GAMBAR</span>
+            </div>
+            <div class="bg-[#141414] border border-[#262112] rounded-xl p-2 flex flex-col items-center">
+              <div class="text-xl mb-1 text-zen-yellow">🎬</div>
+              <span class="text-[9px] font-bold text-neutral-300 uppercase leading-tight">PROMPT VIDEO</span>
+            </div>
+            <div class="bg-[#141414] border border-[#262112] rounded-xl p-2 flex flex-col items-center">
+              <div class="text-xl mb-1 text-zen-yellow">🎙️</div>
+              <span class="text-[9px] font-bold text-neutral-300 uppercase leading-tight">NARASI / DIALOG</span>
+            </div>
+            <div class="bg-[#141414] border border-[#262112] rounded-xl p-2 flex flex-col items-center">
+              <div class="text-xl mb-1 text-zen-yellow">🎵</div>
+              <span class="text-[9px] font-bold text-neutral-300 uppercase leading-tight">AUDIO CUE</span>
+            </div>
+            <div class="bg-[#141414] border border-[#262112] rounded-xl p-2 flex flex-col items-center">
+              <div class="text-xl mb-1 text-zen-yellow">📑</div>
+              <span class="text-[9px] font-bold text-neutral-300 uppercase leading-tight">STORYBOARD</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Banner matching image -->
+      <div class="bg-gradient-to-r from-[#17140b] via-[#261f0a] to-[#17140b] border-2 border-zen-yellow rounded-2xl p-4 text-center zen-glow flex items-center justify-center gap-3">
+        <span class="text-2xl">🎯</span>
+        <h2 class="font-display text-xl sm:text-2xl font-black text-zen-yellow tracking-wider uppercase">
+          PROMPT YANG TEPAT, HASIL YANG HEBAT!
+        </h2>
+      </div>
+
+    </section>
+
+    <!-- VIEW 2: RUMUS GENERATOR (Interactive 5-Formula Prompt Builder) -->
+    <section id="view-generator" class="space-y-6 hidden">
+      <div class="bg-[#0e0e0e] border border-[#2a2413] rounded-2xl p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#231f12] pb-5 mb-6">
+          <div>
+            <span class="text-[11px] font-extrabold uppercase tracking-widest text-zen-yellow bg-zen-yellow/10 px-2.5 py-1 rounded-full border border-zen-yellow/20">Formula Engine</span>
+            <h2 class="font-display text-2xl sm:text-3xl font-black text-white mt-1">Pembuat Prompt Rumus 5-Elemen</h2>
+            <p class="text-xs sm:text-sm text-neutral-400">Rakit prompt terstruktur: [Subjek] + [Aksi] + [Lokasi] + [Detail] + [Gaya Visual].</p>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <button onclick="loadRandomPromptPreset()" class="px-3 py-1.5 rounded-lg bg-[#1a170f] border border-zen-yellow/40 text-zen-yellow text-xs font-semibold hover:bg-zen-yellow hover:text-black transition">
+              🎲 Acak Contoh
+            </button>
+            <button onclick="resetFormula()" class="px-3 py-1.5 rounded-lg bg-neutral-900 border border-neutral-800 text-neutral-400 text-xs font-semibold hover:text-white transition">
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- 5 Interactive Inputs -->
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <!-- 1. Subjek -->
+          <div class="bg-[#141414] p-4 rounded-xl border border-emerald-900/40">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-black text-emerald-400 uppercase tracking-wide">1. SUBJEK</label>
+              <span class="text-[10px] text-neutral-500">Karakter/Objek</span>
+            </div>
+            <textarea id="inp-subjek" rows="3" oninput="updatePromptLive()" placeholder="Misal: Robot android kecil berjaket hoodie hitam bertuliskan ZEN 2.0" class="w-full bg-[#0a0a0a] border border-[#252525] rounded-lg p-2.5 text-xs text-neutral-200 focus:outline-none focus:border-emerald-500 resize-none">Robot android kecil berkepala bulat berjaket hoodie hitam</textarea>
+            <div class="mt-2 flex flex-wrap gap-1">
+              <button onclick="quickFill('subjek', 'Seorang pendekar cyberpunk wanita dengan pedang neon')" class="text-[9px] bg-[#1d1d1d] hover:text-emerald-300 text-neutral-400 px-1.5 py-0.5 rounded">Pendekar Neon</button>
+              <button onclick="quickFill('subjek', 'Kucing ksatria berbaju zirah emas')" class="text-[9px] bg-[#1d1d1d] hover:text-emerald-300 text-neutral-400 px-1.5 py-0.5 rounded">Kucing Ksatria</button>
+            </div>
+          </div>
+
+          <!-- 2. Aksi -->
+          <div class="bg-[#141414] p-4 rounded-xl border border-amber-900/40">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-black text-amber-400 uppercase tracking-wide">2. AKSI</label>
+              <span class="text-[10px] text-neutral-500">Aktivitas/Pose</span>
+            </div>
+            <textarea id="inp-aksi" rows="3" oninput="updatePromptLive()" placeholder="Misal: Sedang menggambar sketsa holografik dengan pena digital" class="w-full bg-[#0a0a0a] border border-[#252525] rounded-lg p-2.5 text-xs text-neutral-200 focus:outline-none focus:border-amber-500 resize-none">Sedang menggambar diagram masa depan dengan pena cahaya holografik</textarea>
+            <div class="mt-2 flex flex-wrap gap-1">
+              <button onclick="quickFill('aksi', 'Berdiri gagah sambil menatap badai pasir')" class="text-[9px] bg-[#1d1d1d] hover:text-amber-300 text-neutral-400 px-1.5 py-0.5 rounded">Tatap Badai</button>
+              <button onclick="quickFill('aksi', 'Sedang menyeruput secangkir kopi hangat')" class="text-[9px] bg-[#1d1d1d] hover:text-amber-300 text-neutral-400 px-1.5 py-0.5 rounded">Minum Kopi</button>
+            </div>
+          </div>
+
+          <!-- 3. Lokasi -->
+          <div class="bg-[#141414] p-4 rounded-xl border border-blue-900/40">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-black text-blue-400 uppercase tracking-wide">3. LOKASI</label>
+              <span class="text-[10px] text-neutral-500">Latar Tempat</span>
+            </div>
+            <textarea id="inp-lokasi" rows="3" oninput="updatePromptLive()" placeholder="Misal: Di dalam ruang kerja studio futuristik bernuansa gelap emas" class="w-full bg-[#0a0a0a] border border-[#252525] rounded-lg p-2.5 text-xs text-neutral-200 focus:outline-none focus:border-blue-500 resize-none">Di dalam studio futuristik gelap dengan aksen lampu neon kuning keemasan</textarea>
+            <div class="mt-2 flex flex-wrap gap-1">
+              <button onclick="quickFill('lokasi', 'Di pasar malam terapung cyberpunk Neo-Tokyo')" class="text-[9px] bg-[#1d1d1d] hover:text-blue-300 text-neutral-400 px-1.5 py-0.5 rounded">Pasar Neo-Tokyo</button>
+              <button onclick="quickFill('lokasi', 'Di atas puncak tebing kristal magis')" class="text-[9px] bg-[#1d1d1d] hover:text-blue-300 text-neutral-400 px-1.5 py-0.5 rounded">Tebing Magis</button>
+            </div>
+          </div>
+
+          <!-- 4. Detail -->
+          <div class="bg-[#141414] p-4 rounded-xl border border-purple-900/40">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-black text-purple-400 uppercase tracking-wide">4. DETAIL</label>
+              <span class="text-[10px] text-neutral-500">Mood/Pencahayaan</span>
+            </div>
+            <textarea id="inp-detail" rows="3" oninput="updatePromptLive()" placeholder="Misal: Pencahayaan dramatis, partikel debu emas melayang, kedalaman bokeh" class="w-full bg-[#0a0a0a] border border-[#252525] rounded-lg p-2.5 text-xs text-neutral-200 focus:outline-none focus:border-purple-500 resize-none">Pencahayaan dramatis rim-light keemasan, partikel cahaya debu sinematik, bokeh tajam</textarea>
+            <div class="mt-2 flex flex-wrap gap-1">
+              <button onclick="quickFill('detail', 'Golden hour natural sunlight, hyper-detailed skin textures')" class="text-[9px] bg-[#1d1d1d] hover:text-purple-300 text-neutral-400 px-1.5 py-0.5 rounded">Golden Hour</button>
+              <button onclick="quickFill('detail', 'Kabut tebal misterius, bayangan kontras tinggi')" class="text-[9px] bg-[#1d1d1d] hover:text-purple-300 text-neutral-400 px-1.5 py-0.5 rounded">Kabut Mistis</button>
+            </div>
+          </div>
+
+          <!-- 5. Gaya Visual -->
+          <div class="bg-[#141414] p-4 rounded-xl border border-pink-900/40">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-black text-pink-400 uppercase tracking-wide">5. GAYA VISUAL</label>
+              <span class="text-[10px] text-neutral-500">Art Style</span>
+            </div>
+            <select id="inp-gaya" onchange="updatePromptLive()" class="w-full bg-[#0a0a0a] border border-[#252525] rounded-lg p-2.5 text-xs text-neutral-200 focus:outline-none focus:border-pink-500 mb-2">
+              <option value="3D Pixar Character Animation style, Octane Render, 8k">3D Animasi Karakter (Pixar/Disney)</option>
+              <option value="Hyper-realistic photography, 8k UHD, shot on 35mm lens, photorealistic">Foto Realistis 35mm Sinematik</option>
+              <option value="Handmade Claymation Clay sculpture style, stop motion texture">Claymation / Tanah Liat Lucu</option>
+              <option value="Studio Ghibli aesthetic, anime watercolor painting, lush details">Anime Gaya Studio Ghibli</option>
+              <option value="Cyberpunk futuristic illustration, high tech sci-fi art, Unreal Engine 5">Cyberpunk Futuristik Sci-Fi</option>
+              <option value="Retro 90s vintage comic book illustration, halftone print">Komik Retro 90an Vintage</option>
+            </select>
+            <div class="text-[10px] text-neutral-400">Target Tool:</div>
+            <select id="inp-tool-target" onchange="updatePromptLive()" class="w-full bg-[#0a0a0a] border border-[#252525] rounded-lg p-2 text-xs text-zen-yellow mt-1">
+              <option value="midjourney">Midjourney v6.1 (dengan parameter --ar & --v)</option>
+              <option value="flux">Flux.1 Schnell / Dev</option>
+              <option value="kling">Kling AI Video (Gerakan & Kamera)</option>
+              <option value="runway">Runway Gen-3 Alpha</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Live Output Preview Card -->
+        <div class="mt-6 bg-[#121008] border-2 border-zen-yellow/80 rounded-xl p-5 relative zen-glow">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-zen-yellow animate-pulse"></span>
+              <span class="font-display font-bold text-sm text-zen-yellow uppercase tracking-wider">Hasil Prompt Otomatis Siap Salin</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="copyGeneratedPrompt('id')" class="px-3 py-1.5 rounded-lg bg-[#221c0b] hover:bg-zen-yellow hover:text-black text-zen-yellow text-xs font-bold border border-zen-yellow/40 transition flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                Salin Bahasa Indo
+              </button>
+              <button onclick="copyGeneratedPrompt('en')" class="px-3.5 py-1.5 rounded-lg bg-zen-yellow text-black font-extrabold text-xs hover:bg-amber-400 transition flex items-center gap-1.5 shadow-md shadow-amber-500/20">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                Salin Bahasa Inggris (Standar AI)
+              </button>
+            </div>
+          </div>
+
+          <!-- English Prompt (Best for AI) -->
+          <div class="mb-3">
+            <div class="text-[10px] uppercase font-bold text-neutral-400 mb-1">PROMPT INGGRIS (Direkomendasikan untuk Midjourney / Kling / Sora):</div>
+            <div id="output-prompt-en" class="p-3.5 rounded-lg bg-black/90 border border-zen-yellow/30 font-mono text-xs sm:text-sm text-zen-yellow leading-relaxed select-all">
+              A cute 3D android robot in a black hoodie jacket with golden trims, drawing future tech schematics with a glowing stylus pen, inside a dark futuristic studio with warm yellow neon lights, dramatic cinematic rim lighting, volumetric dust particles, Octane 3D render, Pixar style, ultra detailed --ar 16:9 --v 6.1
+            </div>
+          </div>
+
+          <!-- Indonesian Prompt -->
+          <div>
+            <div class="text-[10px] uppercase font-bold text-neutral-400 mb-1">PROMPT INDONESIA (Untuk ChatGPT / Canva / Ide Naskah):</div>
+            <div id="output-prompt-id" class="p-3 rounded-lg bg-black/60 border border-[#2b271a] font-mono text-xs text-neutral-300 leading-relaxed">
+              Robot android kecil berkepala bulat berjaket hoodie hitam, sedang menggambar diagram masa depan dengan pena cahaya holografik, di dalam studio futuristik gelap dengan aksen lampu neon kuning keemasan, pencahayaan dramatis rim-light keemasan, partikel cahaya debu sinematik, bokeh tajam, 3D Animasi Karakter, 8k
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: STUDIO PROYEK (End-to-End Storyboard, AI Image, Video & Voice Generator) -->
+    <section id="view-storyboard" class="space-y-6 hidden">
+      <div class="bg-[#0e0e0e] border border-[#2a2413] rounded-2xl p-6">
+        
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#231f12] pb-5 mb-6">
+          <div>
+            <span class="text-[11px] font-extrabold uppercase tracking-widest text-zen-yellow bg-zen-yellow/10 px-2.5 py-1 rounded-full border border-zen-yellow/20">Alur Kerja 10 Langkah</span>
+            <h2 class="font-display text-2xl sm:text-3xl font-black text-white mt-1">Studio Pembuat Storyboard & Proyek Video</h2>
+            <p class="text-xs sm:text-sm text-neutral-400">Hasilkan skrip narasi, prompt visual tiap adegan, dan perintah pergerakan kamera secara otomatis.</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button onclick="populateSampleProject()" class="px-3.5 py-2 rounded-lg bg-[#1e190b] border border-zen-yellow/40 text-zen-yellow text-xs font-bold hover:bg-zen-yellow hover:text-black transition">
+              🪄 Isi Proyek Contoh
+            </button>
+            <button onclick="generateFullStoryboard()" class="px-4 py-2 rounded-lg bg-gradient-to-r from-zen-yellow to-amber-500 text-black text-xs font-extrabold hover:brightness-110 transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
+              <span>⚡ Generate Semua Adegan</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Project Config Inputs (Steps 1 - 6) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 mb-6 bg-[#13120d] p-4 rounded-xl border border-[#2a2311]">
+          <!-- 1. Ide Cerita -->
+          <div class="lg:col-span-2">
+            <label class="text-[11px] font-bold text-zen-yellow uppercase block mb-1">1. Ide Cerita / Premis</label>
+            <input type="text" id="sb-ide" value="Petualangan robot pembuat konten menembus batas imajinasi" class="w-full bg-[#0a0a0a] border border-[#2e2714] rounded-lg p-2 text-xs text-white focus:outline-none focus:border-zen-yellow" />
+          </div>
+
+          <!-- 2. Karakter Utama -->
+          <div class="lg:col-span-1">
+            <label class="text-[11px] font-bold text-zen-yellow uppercase block mb-1">2. Karakter Utama</label>
+            <input type="text" id="sb-karakter" value="Zen, robot ramah berhoodie hitam" class="w-full bg-[#0a0a0a] border border-[#2e2714] rounded-lg p-2 text-xs text-white focus:outline-none focus:border-zen-yellow" />
+          </div>
+
+          <!-- 3. Genre -->
+          <div class="lg:col-span-1">
+            <label class="text-[11px] font-bold text-zen-yellow uppercase block mb-1">3. Genre</label>
+            <select id="sb-genre" class="w-full bg-[#0a0a0a] border border-[#2e2714] rounded-lg p-2 text-xs text-white focus:outline-none focus:border-zen-yellow">
+              <option value="Sci-Fi Inspiratif">Sci-Fi Inspiratif</option>
+              <option value="Komedi Lucu">Komedi Lucu</option>
+              <option value="Aksi Heroik">Aksi Heroik</option>
+              <option value="Drama Edukatif">Drama Edukatif</option>
+              <option value="Fantasi Magis">Fantasi Magis</option>
+            </select>
+          </div>
+
+          <!-- 4. Gaya Visual -->
+          <div class="lg:col-span-1">
+            <label class="text-[11px] font-bold text-zen-yellow uppercase block mb-1">4. Gaya Visual</label>
+            <select id="sb-style" class="w-full bg-[#0a0a0a] border border-[#2e2714] rounded-lg p-2 text-xs text-white focus:outline-none focus:border-zen-yellow">
+              <option value="3D Pixar Aesthetic">3D Pixar Aesthetic</option>
+              <option value="Cinematic Realism 4K">Cinematic Realism 4K</option>
+              <option value="Claymation Cute">Claymation Lucu</option>
+              <option value="Anime Cyberpunk">Anime Cyberpunk</option>
+            </select>
+          </div>
+
+          <!-- 5 & 6. Adegan & Rasio -->
+          <div class="lg:col-span-1 flex gap-2">
+            <div class="w-1/2">
+              <label class="text-[11px] font-bold text-zen-yellow uppercase block mb-1">5. Adegan</label>
+              <select id="sb-scenes-count" class="w-full bg-[#0a0a0a] border border-[#2e2714] rounded-lg p-2 text-xs text-white focus:outline-none focus:border-zen-yellow">
+                <option value="3">3 Adegan</option>
+                <option value="4" selected>4 Adegan</option>
+                <option value="5">5 Adegan</option>
+              </select>
+            </div>
+            <div class="w-1/2">
+              <label class="text-[11px] font-bold text-zen-yellow uppercase block mb-1">6. Rasio</label>
+              <select id="sb-aspect" class="w-full bg-[#0a0a0a] border border-[#2e2714] rounded-lg p-2 text-xs text-white focus:outline-none focus:border-zen-yellow">
+                <option value="16:9">16:9 (YT/PC)</option>
+                <option value="9:16">9:16 (TikTok/Reels)</option>
+                <option value="1:1">1:1 (Square)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Storyboard Scenes Output List (Steps 7 - 10) -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-zen-yellow">Output Adegan Terstruktur (Langkah 7 s/d 10)</span>
+              <span id="scene-counter-badge" class="text-[10px] bg-neutral-800 text-neutral-300 px-2 py-0.5 rounded">4 Adegan</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="copyEntireProjectScript()" class="text-xs bg-[#19150c] border border-zen-yellow/30 text-zen-yellow px-3 py-1.5 rounded-lg hover:bg-zen-yellow hover:text-black font-semibold transition">
+                📋 Salin Seluruh Naskah & Prompt
+              </button>
+            </div>
+          </div>
+
+          <div id="scenes-container" class="space-y-4">
+            <!-- Will be dynamically populated via JavaScript -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification System -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-4 py-3 rounded-xl bg-[#18150c] border border-zen-yellow text-white shadow-2xl shadow-zen-yellow/20">
+    <div id="toast-icon" class="w-7 h-7 rounded-full bg-zen-yellow text-black flex items-center justify-center font-bold text-xs">✓</div>
+    <div>
+      <h4 id="toast-title" class="text-xs font-extrabold text-zen-yellow uppercase">Berhasil Disalin!</h4>
+      <p id="toast-msg" class="text-xs text-neutral-300">Prompt telah disalin ke papan klip Anda.</p>
+    </div>
+  </div>
+
+  <!-- Footer Branding -->
+  <footer class="border-t border-[#1e1c14] bg-[#090909] py-4 text-center text-xs text-neutral-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="font-display font-bold text-zen-yellow">ZEN VOL 2.0</span>
+        <span>•</span>
+        <span>Standar Prompt Engineering Berbasis AI</span>
+      </div>
+      <div>
+        <span>Desain & Framework Terinspirasi dari Panduan Resmi ZEN 2.0</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // State management
+    let soundEnabled = true;
+    let synth = null;
+
+    // Initialize Tone.js synthesizer safely on user interaction
+    function initAudio() {
+      if (!synth && typeof Tone !== 'undefined') {
+        try {
+          synth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: "triangle" },
+            envelope: { attack: 0.005, decay: 0.1, sustain: 0.1, release: 0.3 }
+          }).toDestination();
+          synth.volume.value = -12;
+        } catch(e) {
+          console.log("Audio init fallback", e);
+        }
+      }
+    }
+
+    function playTone(type) {
+      if (!soundEnabled) return;
+      try {
+        initAudio();
+        if (synth && Tone.context.state === 'running') {
+          if (type === 'click') {
+            synth.triggerAttackRelease("A5", "32n");
+          } else if (type === 'success') {
+            synth.triggerAttackRelease(["C5", "E5", "G5"], "16n");
+          } else if (type === 'greet') {
+            synth.triggerAttackRelease(["E5", "B5", "E6"], "16n");
+          }
+        }
+      } catch (e) {
+        // Fallback silently if audio context is blocked
+      }
+    }
+
+    function toggleSoundFx() {
+      soundEnabled = !soundEnabled;
+      const icon = document.getElementById('soundIcon');
+      const btn = document.getElementById('soundToggleBtn');
+      if (soundEnabled) {
+        btn.classList.remove('opacity-50');
+        showToast("Audio Aktif", "Efek suara UI dinyalakan.");
+        playTone('success');
+      } else {
+        btn.classList.add('opacity-50');
+        showToast("Audio Senyap", "Efek suara UI dimatikan.");
+      }
+    }
+
+    // Tab Navigation
+    function switchTab(tabId) {
+      playTone('click');
+      const tabs = ['dashboard', 'generator', 'storyboard'];
+      tabs.forEach(t => {
+        const viewEl = document.getElementById('view-' + t);
+        const btnEl = document.getElementById('tab-' + t);
+        if (t === tabId) {
+          viewEl.classList.remove('hidden');
+          viewEl.classList.add('block');
+          btnEl.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 bg-zen-yellow text-black shadow-sm flex items-center gap-1.5";
+        } else {
+          viewEl.classList.add('hidden');
+          viewEl.classList.remove('block');
+          btnEl.className = "px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 text-neutral-400 hover:text-white flex items-center gap-1.5";
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Mascot Greeting
+    function mascotGreet() {
+      playTone('greet');
+      const eyeL = document.getElementById('robot-eye-left');
+      const eyeR = document.getElementById('robot-eye-right');
+      eyeL.setAttribute('height', '6');
+      eyeR.setAttribute('height', '6');
+      setTimeout(() => {
+        eyeL.setAttribute('height', '24');
+        eyeR.setAttribute('height', '24');
+      }, 300);
+
+      const greetings = [
+        "Hai! Aku ZEN 2.0. Siap bantu bikin prompt gambarmu super detail!",
+        "Tips Zen: Selalu tambahkan 'Gaya Visual' di akhir prompt untuk hasil konsisten!",
+        "Mau bikin video cinematic? Pastikan tulis 'camera slow pan' di prompt video!",
+        "Ide cerita terbaik dimulai dari karakter yang memiliki tujuan jelas!",
+        "Rumus 5-Elemen ZEN akan mencegah hasil gambar AI tampak aneh!"
+      ];
+      const randomMsg = greetings[Math.floor(Math.random() * greetings.length)];
+      showToast("ZEN 2.0 Berbisik:", randomMsg);
+    }
+
+    // Step detail tips
+    const stepGuides = {
+      1: "Langkah 1 (Ide Cerita): Rumuskan kalimat inti. Contoh: 'Seorang koki tua yang menemukan resep sup penjelajah waktu.'",
+      2: "Langkah 2 (Karakter Utama): Deskripsikan fisik khas (pakaian, warna rambut, aksesoris unik) agar konsisten di setiap adegan.",
+      3: "Langkah 3 (Genre): Menentukan mood pencahayaan dan tempo penceritaan (misal: Horor butuh gelap & kontras).",
+      4: "Langkah 4 (Gaya Visual): Kunci estetik! Jangan campur 'realistic photography' dengan 'anime 2D' dalam satu project.",
+      5: "Langkah 5 (Jumlah Adegan): Format video TikTok/Reels idealnya 3-5 adegan berdurasi 15-30 detik.",
+      6: "Langkah 6 (Rasio Aspek): 16:9 untuk YouTube layar lebar, 9:16 untuk Reels/Shorts vertikal penuh.",
+      7: "Langkah 7 (Storyboard): Susun pergerakan: Pembuka (Hook) -> Masalah (Conflict) -> Puncak -> Penutup (Resolution).",
+      8: "Langkah 8 (Prompt Gambar): Buat gambar diam kualitas tinggi sebagai acuan keyframe menggunakan rumus 5-elemen.",
+      9: "Langkah 9 (Prompt Video): Masukkan gambar hasil Langkah 8 ke Image-to-Video lalu beri prompt pergerakan (motion).",
+      10: "Langkah 10 (Narasi): Buat skrip singkat yang berirama pas dengan visual (1 detik = sekitar 2-3 kata)."
+    };
+
+    function previewStepDetails(stepNum) {
+      playTone('click');
+      const textEl = document.getElementById('step-detail-text');
+      textEl.innerHTML = `<strong class="text-zen-yellow font-display">Langkah ${stepNum}:</strong> ${stepGuides[stepNum]}`;
+    }
+
+    function selectGenreFast(genre) {
+      playTone('click');
+      switchTab('generator');
+      quickFill('subjek', `Karakter utama dalam petualangan genre ${genre}`);
+      showToast("Genre Dipilih", `Template disesuaikan untuk cerita ${genre}.`);
+    }
+
+    // Prompt formula live updater
+    function quickFill(field, text) {
+      playTone('click');
+      document.getElementById(`inp-${field}`).value = text;
+      updatePromptLive();
+    }
+
+    function updatePromptLive() {
+      const subjek = document.getElementById('inp-subjek').value.trim() || 'Subjek';
+      const aksi = document.getElementById('inp-aksi').value.trim() || 'melakukan aksi';
+      const lokasi = document.getElementById('inp-lokasi').value.trim() || 'di suatu tempat';
+      const detail = document.getElementById('inp-detail').value.trim() || 'pencahayaan detail';
+      const gaya = document.getElementById('inp-gaya').value;
+      const targetTool = document.getElementById('inp-tool-target').value;
+
+      // Build Indonesian prompt
+      const promptId = `${subjek}, ${aksi}, ${lokasi}, ${detail}, gaya ${gaya}`;
+      document.getElementById('output-prompt-id').innerText = promptId;
+
+      // Translate common cues into high-converting English AI prompt
+      let enSubjek = subjek;
+      let enAksi = aksi;
+      let enLokasi = lokasi;
+      let enDetail = detail;
+
+      // Smart simple dictionary translation for common Indonesian words
+      const simpleReplacements = [
+        [/robot android kecil/gi, 'cute small android robot'],
+        [/berjaket hoodie hitam/gi, 'wearing black hoodie jacket with gold trims'],
+        [/sedang menggambar/gi, 'drawing intricate holographic sketches'],
+        [/pena cahaya/gi, 'glowing stylus pen'],
+        [/studio futuristik/gi, 'futuristic cyberpunk tech studio'],
+        [/pencahayaan dramatis/gi, 'dramatic volumetric lighting, rim light'],
+        [/partikel cahaya/gi, 'floating golden dust embers bokeh']
+      ];
+      simpleReplacements.forEach(([rgx, rep]) => {
+        enSubjek = enSubjek.replace(rgx, rep);
+        enAksi = enAksi.replace(rgx, rep);
+        enLokasi = enLokasi.replace(rgx, rep);
+        enDetail = enDetail.replace(rgx, rep);
+      });
+
+      let toolSuffix = '';
+      if (targetTool === 'midjourney') {
+        toolSuffix = ' --ar 16:9 --v 6.1 --style raw';
+      } else if (targetTool === 'kling') {
+        toolSuffix = ' [Camera: Slow cinematic zoom in, smooth natural motion]';
+      } else if (targetTool === 'runway') {
+        toolSuffix = ' [Cinematic 4k motion, hyper-detailed rendering]';
+      }
+
+      const promptEn = `${enSubjek}, ${enAksi}, ${enLokasi}, ${enDetail}, ${gaya}${toolSuffix}`;
+      document.getElementById('output-prompt-en').innerText = promptEn;
+    }
+
+    function resetFormula() {
+      playTone('click');
+      document.getElementById('inp-subjek').value = 'Robot android kecil berkepala bulat berjaket hoodie hitam';
+      document.getElementById('inp-aksi').value = 'Sedang menggambar diagram masa depan dengan pena cahaya';
+      document.getElementById('inp-lokasi').value = 'Di dalam studio futuristik gelap dengan aksen lampu neon emas';
+      document.getElementById('inp-detail').value = 'Pencahayaan dramatis rim-light keemasan, partikel bokeh tajam';
+      updatePromptLive();
+      showToast("Formulir Direset", "Data kembali ke preset default ZEN 2.0.");
+    }
+
+    const randomPresets = [
+      {
+        s: "Seorang biksu cyberpunk berjanggut putih bercahaya",
+        a: "Sedang bermeditasi melayang di atas kuil digital",
+        l: "Di atas gedung pencakar langit berawan neon ungu dan emas",
+        d: "Cahaya aurora melingkar, kedalaman bidang sinematik, debu energi mistis",
+        g: "Cyberpunk futuristic illustration, high tech sci-fi art, Unreal Engine 5"
+      },
+      {
+        s: "Seekor anak musang berpakaian detektif zaman Victoria",
+        a: "Memeriksa jejak kaki bercahaya menggunakan kaca pembesar kuno",
+        l: "Di jalanan berbatu berkabut tebal London malam hari",
+        d: "Lampu gas minyak temaram, tetesan embun hujan di bulu, atmosfer misterius",
+        g: "3D Pixar Character Animation style, Octane Render, 8k"
+      },
+      {
+        s: "Robot astronot mungil dengan ransel tanaman hidup",
+        a: "Menyiram tunas pohon sakura kristal di planet tandus",
+        l: "Lanskap planet asing dengan dua bulan besar di langit ungu",
+        d: "Bintang kosmik bercahaya, pantulan helm kaca hiper-detail",
+        g: "Hyper-realistic photography, 8k UHD, shot on 35mm lens, photorealistic"
+      }
+    ];
+
+    function loadRandomPromptPreset() {
+      playTone('click');
+      const p = randomPresets[Math.floor(Math.random() * randomPresets.length)];
+      document.getElementById('inp-subjek').value = p.s;
+      document.getElementById('inp-aksi').value = p.a;
+      document.getElementById('inp-lokasi').value = p.l;
+      document.getElementById('inp-detail').value = p.d;
+      document.getElementById('inp-gaya').value = p.g;
+      updatePromptLive();
+      showToast("Preset Terpasang", "Inspirasi prompt baru telah dimuat.");
+    }
+
+    function copyGeneratedPrompt(lang) {
+      const text = lang === 'en' 
+        ? document.getElementById('output-prompt-en').innerText 
+        : document.getElementById('output-prompt-id').innerText;
+      copyToClipboard(text);
+      playTone('success');
+      showToast("Prompt Disalin!", `Prompt bahasa ${lang === 'en' ? 'Inggris' : 'Indonesia'} siap digunakan.`);
+    }
+
+    function copyToClipboard(text) {
+      // Use document.execCommand to ensure compatibility in nested iframe environments
+      const tempTextarea = document.createElement('textarea');
+      tempTextarea.value = text;
+      tempTextarea.style.position = 'fixed';
+      tempTextarea.style.left = '-9999px';
+      document.body.appendChild(tempTextarea);
+      tempTextarea.select();
+      try {
+        document.execCommand('copy');
+      } catch (err) {
+        console.error('Copy failed', err);
+      }
+      document.body.removeChild(tempTextarea);
+    }
+
+    function showToast(title, message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-title').innerText = title;
+      document.getElementById('toast-msg').innerText = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 3200);
+    }
+
+    // Dynamic Storyboard Engine
+    const sceneTemplates = [
+      {
+        title: "Adegan 1 - Pengenalan (Hook)",
+        camera: "Establishing Shot, Kamera perlahan zoom in menembus kabut ke arah karakter",
+        imgPrompt: "Karakter utama berdiri di ambang jendela besar menatap panorama dunia yang luas, suasana hening penuh harapan, pencahayaan golden hour dramatis",
+        vidPrompt: "Slow push-in camera movement towards the character, soft ambient light flickering, hair gently moving in wind, cinematic 24fps",
+        narasi: "Di dunia di mana setiap imajinasi dapat diciptakan, ada satu kunci penting yang sering terlupakan: ketepatan kata."
+      },
+      {
+        title: "Adegan 2 - Konflik & Eksplorasi (Action)",
+        camera: "Medium Shot, Kamera memutar 45 derajat mengikuti tangan yang bekerja",
+        imgPrompt: "Karakter mengoperasikan konsol kendali holografik bercahaya, partikel kode emas berpendar di udara, raut wajah fokus dan antusias",
+        vidPrompt: "Dynamic circular arc shot around the character as glowing glyphs float smoothly, energetic subtle motion, lens flare",
+        narasi: "Ketika kita merangkai subjek, aksi, dan detail dengan disiplin, keajaiban visual mulai mengambil wujud aslinya."
+      },
+      {
+        title: "Adegan 3 - Klimaks (Transformation)",
+        camera: "Low Angle Dutch Tilt, pencahayaan meledak megah",
+        imgPrompt: "Sebuah kreasi visual spektakuler mekar dari inti mesin cahaya, memancarkan energi keemasan yang menerangi seluruh ruangan",
+        vidPrompt: "Fast pull back camera transitioning to grand wide view, burst of warm volumetric golden light, particles scattering smoothly",
+        narasi: "Bukan tentang seberapa panjang instruksimu, melainkan seberapa jernih visi yang kamu tanamkan di setiap baris prompt."
+      },
+      {
+        title: "Adegan 4 - Penutup & Call to Action",
+        camera: "Close Up wajah tersenyum percaya diri lalu tilt up ke logo ZEN 2.0",
+        imgPrompt: "Karakter tersenyum ramah ke arah kamera sambil mengacungkan pena stylus emas, latar belakang studio hangat dan bersih",
+        vidPrompt: "Smooth gentle handheld feel, character winks and raises the stylus, slow fade to rich golden background, highly stable",
+        narasi: "Kuasai rumus ZEN 2.0 hari ini. Karena prompt yang tepat, selalu melahirkan hasil yang hebat!"
+      },
+      {
+        title: "Adegan 5 - Bonus / Epilog (Showcase)",
+        camera: "Aerial Bird's eye shot yang perlahan naik ke angkasa",
+        imgPrompt: "Galeri karya seni futuristik terapung menampilkan berbagai masterpiece visual yang telah diciptakan",
+        vidPrompt: "Drone ascending shot rising through the floating art gallery into the starlit sky, smooth elegant motion",
+        narasi: "Sekarang, giliranmu menciptakan mahakarya berikutnya."
+      }
+    ];
+
+    function populateSampleProject() {
+      playTone('click');
+      document.getElementById('sb-ide').value = "Inovasi Kreator Konten AI Menembus Era Digital";
+      document.getElementById('sb-karakter').value = "Zen 2.0, robot mungil berhelm hitam dengan mata LED putih ramah";
+      document.getElementById('sb-genre').value = "Sci-Fi Inspiratif";
+      document.getElementById('sb-style').value = "3D Pixar Aesthetic";
+      document.getElementById('sb-scenes-count').value = "4";
+      document.getElementById('sb-aspect').value = "16:9";
+      generateFullStoryboard();
+      showToast("Proyek Terisi", "Contoh alur cerita ZEN VOL 2.0 siap diproduksi!");
+    }
+
+    function generateFullStoryboard() {
+      playTone('success');
+      const count = parseInt(document.getElementById('sb-scenes-count').value, 10);
+      const ide = document.getElementById('sb-ide').value;
+      const karakter = document.getElementById('sb-karakter').value;
+      const style = document.getElementById('sb-style').value;
+      const aspect = document.getElementById('sb-aspect').value;
+      const genre = document.getElementById('sb-genre').value;
+
+      document.getElementById('scene-counter-badge').innerText = `${count} Adegan Dihasilkan`;
+      const container = document.getElementById('scenes-container');
+      container.innerHTML = '';
+
+      for (let i = 0; i < count; i++) {
+        const tpl = sceneTemplates[i % sceneTemplates.length];
+        const sceneCard = document.createElement('div');
+        sceneCard.className = "bg-[#141414] border border-[#2b2513] rounded-xl p-4 sm:p-5 hover:border-zen-yellow/50 transition relative";
+        
+        const fullImgPrompt = `${tpl.imgPrompt}, Karakter: ${karakter}, Gaya visual: ${style}, Tema: ${genre}, 8k ultra detailed --ar ${aspect}`;
+        const fullVidPrompt = `${tpl.vidPrompt}, Movement: ${tpl.camera}, style consistent with ${style}`;
+
+        sceneCard.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#221f14] pb-3 mb-3">
+            <div class="flex items-center gap-2.5">
+              <span class="w-6 h-6 rounded-full bg-zen-yellow text-black font-extrabold text-xs flex items-center justify-center">${i + 1}</span>
+              <h3 class="font-display font-bold text-sm text-zen-yellow uppercase">${tpl.title}</h3>
+            </div>
+            <span class="text-[11px] text-neutral-400 bg-[#0d0d0d] px-2.5 py-1 rounded border border-[#242115]">Rasio: ${aspect}</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-3 text-xs">
+            <!-- Voiceover / Narasi -->
+            <div class="md:col-span-4 bg-[#0a0a0a] p-3 rounded-lg border border-[#222]">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold text-amber-400 uppercase flex items-center gap-1">
+                  🎙️ 10. Narasi / Voice-Over
+                </span>
+                <button onclick="copySingleText('${escapeForAttr(tpl.narasi)}')" class="text-[10px] text-neutral-400 hover:text-zen-yellow">Salin</button>
+              </div>
+              <p class="text-neutral-300 italic leading-relaxed">"${tpl.narasi}"</p>
+            </div>
+
+            <!-- Image Prompt -->
+            <div class="md:col-span-4 bg-[#0a0a0a] p-3 rounded-lg border border-[#222]">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold text-emerald-400 uppercase flex items-center gap-1">
+                  🖼️ 8. Prompt Gambar (AI Art)
+                </span>
+                <button onclick="copySingleText('${escapeForAttr(fullImgPrompt)}')" class="text-[10px] text-neutral-400 hover:text-zen-yellow">Salin</button>
+              </div>
+              <p class="text-neutral-400 font-mono text-[11px] leading-snug break-words">${fullImgPrompt}</p>
+            </div>
+
+            <!-- Video Prompt -->
+            <div class="md:col-span-4 bg-[#0a0a0a] p-3 rounded-lg border border-[#222]">
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-[10px] font-bold text-purple-400 uppercase flex items-center gap-1">
+                  🎬 9. Prompt Video & Kamera
+                </span>
+                <button onclick="copySingleText('${escapeForAttr(fullVidPrompt)}')" class="text-[10px] text-neutral-400 hover:text-zen-yellow">Salin</button>
+              </div>
+              <p class="text-neutral-400 font-mono text-[11px] leading-snug break-words">${fullVidPrompt}</p>
+            </div>
+          </div>
+        `;
+        container.appendChild(sceneCard);
+      }
+    }
+
+    function escapeForAttr(str) {
+      return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    function copySingleText(text) {
+      playTone('success');
+      copyToClipboard(text);
+      showToast("Elemen Disalin!", "Teks berhasil dimasukkan ke clipboard.");
+    }
+
+    function copyEntireProjectScript() {
+      const count = parseInt(document.getElementById('sb-scenes-count').value, 10);
+      const ide = document.getElementById('sb-ide').value;
+      const karakter = document.getElementById('sb-karakter').value;
+      const style = document.getElementById('sb-style').value;
+      const aspect = document.getElementById('sb-aspect').value;
+
+      let fullDoc = `========================================\n`;
+      fullDoc += `ZEN VOL 2.0 - DOKUMEN STORYBOARD PROYEK\n`;
+      fullDoc += `========================================\n\n`;
+      fullDoc += `Ide Cerita: ${ide}\n`;
+      fullDoc += `Karakter Utama: ${karakter}\n`;
+      fullDoc += `Gaya Visual: ${style}\n`;
+      fullDoc += `Aspek Rasio: ${aspect}\n\n`;
+      fullDoc += `----------------------------------------\n`;
+
+      for (let i = 0; i < count; i++) {
+        const tpl = sceneTemplates[i % sceneTemplates.length];
+        fullDoc += `[ADEGAN ${i + 1}: ${tpl.title.toUpperCase()}]\n`;
+        fullDoc += `Narasi: "${tpl.narasi}"\n`;
+        fullDoc += `Prompt Gambar: ${tpl.imgPrompt}, Karakter: ${karakter}, Gaya: ${style} --ar ${aspect}\n`;
+        fullDoc += `Prompt Video: ${tpl.vidPrompt}\n`;
+        fullDoc += `----------------------------------------\n`;
+      }
+
+      fullDoc += `\n🎯 Dibuat dengan Standar ZEN VOL 2.0`;
+      copyToClipboard(fullDoc);
+      playTone('success');
+      showToast("Seluruh Proyek Disalin", "Seluruh adegan, prompt gambar, video, dan narasi siap dipakai!");
+    }
+
+    window.onload = function() {
+      updatePromptLive();
+      generateFullStoryboard();
+    };
+  </script>
+</body>
+</html>
